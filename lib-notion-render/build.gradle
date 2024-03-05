@@ -34,9 +34,10 @@ publishing {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.2'
-    compile group: 'org.apache.commons', name: 'commons-text', version: '1.4'
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.2'
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.4'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+    implementation project(':lib-java-notion-sdk')
 }

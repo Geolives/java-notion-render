@@ -4,15 +4,17 @@ import be.doubotis.notion.entities.NotionBlock;
 import be.doubotis.notion.render.BlockRenderFactory;
 import be.doubotis.notion.render.theme.notion.NotionRenderContext;
 import be.doubotis.notion.render.theme.notion.SpanRender;
+import com.geolives.entities.pages.BreadcrumbItem;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class BreadcrumbBuilder {
 
-    public void printHTMLContent(PrintWriter pw, Map<String, NotionBlock> blocks) {
+    public void printHTMLContent(PrintWriter pw, List<BreadcrumbItem> items) {
 
         NotionRenderContext nrc = new NotionRenderContext(blocks);
         ArrayList<NotionBlock> pageBlocks = new ArrayList<>();

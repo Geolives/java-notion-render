@@ -1,9 +1,8 @@
-import be.doubotis.notion.entities.NotionBlock;
-import be.doubotis.notion.entities.NotionRecordMap;
 import be.doubotis.notion.render.BlockRenderFactory;
 import be.doubotis.notion.render.theme.notion.NotionThemeFactory;
 import breadcrumbs.BreadcrumbBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.geolives.entities.pages.Page;
 
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
@@ -39,10 +38,10 @@ public class NotionServlet extends javax.servlet.http.HttpServlet {
         // Build an InputStreamReader to pass it to an ObjectMapper.
         InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
         ObjectMapper om = new ObjectMapper();
-        NotionRecordMap nrm = om.readValue(isr, NotionRecordMap.class);
+        Page page = om.readValue(isr, Page.class);
 
         // Retrieve the list of blocks.
-        Map<String, NotionBlock> blocks = nrm.getBlocks();
+//        Map<String, NotionBlock> blocks = nrm.getBlocks();
 
         // Setup the printer and return some headers.
         PrintWriter pw = response.getWriter();
@@ -57,7 +56,7 @@ public class NotionServlet extends javax.servlet.http.HttpServlet {
 
         // Build a breadcrumb on top of the page.
         BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
-        breadcrumbBuilder.printHTMLContent(pw, blocks);
+        breadcrumbBuilder.printHTMLContent(pw, page.getBreadcrumb());
 
         // Render the blocks.
         BlockRenderFactory factory = new NotionThemeFactory();
