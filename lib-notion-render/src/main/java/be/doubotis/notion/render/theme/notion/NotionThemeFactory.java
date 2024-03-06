@@ -1,7 +1,7 @@
 package be.doubotis.notion.render.theme.notion;
 
-import be.doubotis.notion.entities.NotionBlock;
 import be.doubotis.notion.render.BlockRenderFactory;
+import com.geolives.entities.pages.Page;
 
 import java.io.*;
 import java.util.Map;
@@ -31,9 +31,9 @@ public class NotionThemeFactory implements BlockRenderFactory {
         }
     }
 
-    public synchronized void printHTMLContent(PrintWriter pw, Map<String, NotionBlock> blocks)
+    public synchronized void printHTMLContent(PrintWriter pw, final Page page)
     {
-        NotionRenderContext ctx = new NotionRenderContext(blocks);
+        NotionRenderContext ctx = new NotionRenderContext(page);
         ctx.render(pw);
     }
 

@@ -1,194 +1,116 @@
 package be.doubotis.notion.render.theme.notion;
 
-import be.doubotis.notion.entities.NotionBlock;
 import be.doubotis.notion.render.RenderContext;
 import be.doubotis.notion.render.theme.notion.renders.*;
 import be.doubotis.notion.render.BlockRender;
 import be.doubotis.notion.render.BlockRenderFactory;
 import be.doubotis.notion.render.engine.DOMBuilder;
+import com.geolives.entities.blocks.Block;
+import com.geolives.entities.blocks.richtexts.RichText;
+import com.geolives.entities.enums.BlockType;
+import com.geolives.entities.pages.Page;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class NotionRenderContext implements RenderContext {
 
-    private DOMBuilder mDOM;
-    private Map<String, NotionBlock> mBlocks;
-    private ArrayList<String> mPrintedIDs;
-    private Map<String, BlockRender> mRenders;
-    private String mPageID;
-    private int mRenderingStep;
-    private SpanRender mSpanRender;
+    private DOMBuilder domBuilder;
+    private Map<BlockType, BlockRender> renders;
+    private SpanRender spanRender;
+    private Page page;
 
-    public NotionRenderContext(Map<String, NotionBlock> blocks) {
-        mBlocks = blocks;
-        mPrintedIDs = new ArrayList<>();
-        mRenders = new HashMap<>();
-        mRenderingStep = 0;
-        mDOM = new DOMBuilder();
-        mSpanRender = new SpanRender(this);
+    public NotionRenderContext(final Page page) {
+        this.domBuilder = new DOMBuilder();
+        this.renders = new HashMap<>();
+        this.spanRender = new SpanRender(this);
+        this.page = page;
     }
 
     @Override
-    public Map<String, NotionBlock> getBlocks() {
-        return mBlocks;
-    }
-
-    @Override
-    public Set<String> getKeySet() {
-        return mBlocks.keySet();
-    }
-
-    @Override
-    public int getRenderingStep() {
-        return mRenderingStep;
+    public List<Block> getBlocks() {
+        return this.page.getChildren();
     }
 
     @Override
     public String getPageID() {
-        return mPageID;
+        return this.page.getId();
     }
 
     @Override
-    public String buildLinkUrl(String pageId) {
+    public String buildLinkUrl(final String pageId) {
         return "/NotionServlet?pageid=" + pageId;
     }
 
-    @Override
-    public void flagAsRendered(String id)
-    {
-        System.out.println("Flagged " + id + " as rendered");
-        mPrintedIDs.add(id);
-    }
+    public void render(final PrintWriter pw) {
 
-    public void render(PrintWriter pw) {
+        this.domBuilder.clear();
 
-        mDOM.clear();
+        final PageRender pageRender = new PageRender();
+        pageRender.renderPage(this.domBuilder, this, this.page);
 
-        // TODO: In order to be sure the blocks are correctly ordered, we need one more info.
-        // Request this url (getBacklinksForBlock) to retrieve the order of contents of the block.
-        // Then order the LinkedHashMap to be sure all is ordered.
-        // Example Id: f5517d7ec74246ba87ed0c012b34bf2f
-
-        // Get the page ID.
-        String firstId = mBlocks.keySet().iterator().next();
-        mPageID = firstId;
-        System.out.println("PageID: " + mPageID);
-
-        // Browse the blocks and ask a rendering.
-        mRenderingStep = 0;
-        for (String key : mBlocks.keySet()) {
-            NotionBlock nb = mBlocks.get(key);
-
-            // If this block is already printed, we skip it.
-            if (mPrintedIDs.contains(key)) {
-                mRenderingStep++;
-                continue;
-            }
-
-            doRender(mDOM, key, nb);
-            mRenderingStep++;
-        }
-
-        // After the rendering is complete, we execute the doAfter() logic on every blocks.
-        for (String key : mBlocks.keySet()) {
-            NotionBlock nb = mBlocks.get(key);
-            doAfter(mDOM, key, nb);
+        for(final Block block : this.page.getChildren()) {
+            doRender(block);
         }
 
         // Process is complete, write into the printwriter.
-        mDOM.writeTo(pw);
+        this.domBuilder.writeTo(pw);
     }
 
-    public void doRender(DOMBuilder dom, String blockId, NotionBlock nb) {
-        System.out.println(blockId + " | " + nb.toString());
-        BlockRender render = getRender(blockId, nb);
+    public void doRender(final Block block) {
+        System.out.println("Render block : " + block.getId());
+        BlockRender render = getRender(block);
         if (render != null) {
-            render.render(dom, this, blockId, nb);
+            render.render(this.domBuilder, this, block);
+        }
+        for (final Block child : block.getChildren()) {
+            doRender(child);
         }
     }
 
-    public void doAfter(DOMBuilder dom, String blockId, NotionBlock nb) {
-        BlockRender render = getRender(blockId, nb);
-        if (render != null) {
-            render.doAfter(dom, this, blockId, nb);
-        }
-    }
+//    public void doAfter(DOMBuilder dom, String blockId, NotionBlock nb) {
+//        BlockRender render = getRender(blockId, nb);
+//        if (render != null) {
+//            render.doAfter(dom, this, blockId, nb);
+//        }
+//    }
 
-    public synchronized BlockRender getRender(String id, NotionBlock nb) {
-
-        String blockType = nb.getValue().getType();
-
-        // Loop inside already instantiated renders.
-        BlockRender br = mRenders.get(blockType);
+    public synchronized BlockRender getRender(Block block) {
+        final BlockType blockType = block.getType();
+        BlockRender br = this.renders.get(blockType);
         if (br == null) {
-            br = instantiateRender(blockType);
-
+            br = instantiateRender(block);
             if (br != null) {
-                mRenders.put(blockType, br);
+                this.renders.put(blockType, br);
             }
         }
 
-        // Return the wanted render.
         return br;
     }
 
-    protected BlockRender instantiateRender(String blockType)
+    protected BlockRender instantiateRender(Block block)
     {
-        if (blockType.equals(BlockRenderFactory.TYPE_PAGE)) {
-            return new BlockPageRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_TEXT)) {
-            return new BlockTextRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_IMAGE)) {
-            return new BlockImageRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_HEADER)) {
-            return new BlockHeaderRender(2);
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_SUB_HEADER)) {
-            return new BlockHeaderRender(3);
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_SUB_SUB_HEADER)) {
-            return new BlockHeaderRender(4);
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_BULLETED_LIST)) {
-            return new BlockBulletedListRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_NUMBERED_LIST)) {
-            return new BlockNumberedListRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_QUOTE)) {
-            return new BlockQuoteRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_TODO)) {
-            return new BlockTodoRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_BOOKMARK)) {
-            return new BlockBookmarkRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_COLUMN_LIST)) {
-            return new BlockColumnListRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_COLUMN)) {
-            return new BlockColumnRender();
-        }
-        else if (blockType.equals(BlockRenderFactory.TYPE_CALLOUT)) {
-            return new BlockCalloutRender();
-        }
-        else {
-            System.err.println("Block type not recognized: " + blockType);
-            return null;
-        }
+        return switch (block.getType()) {
+            case PARAGRAPH -> new BlockTextRender();
+            case BULLETED_LIST_ITEM -> new BlockBulletedListRender();
+            case NUMBERED_LIST_ITEM -> new BlockNumberedListRender();
+            case CALLOUT -> new BlockCalloutRender();
+            case HEADING_1 -> new BlockHeaderRender(1);
+            case HEADING_2 -> new BlockHeaderRender(2);
+            case HEADING_3 -> new BlockHeaderRender(3);
+            case QUOTE -> new BlockQuoteRender();
+            case IMAGE -> new BlockImageRender();
+            case COLUMN_LIST -> new BlockColumnListRender();
+            case COLUMN -> new BlockColumnRender();
+            case CHILD_PAGE -> new BlockChildPageRender();
+            default -> {
+                System.out.println("Unrecognize block type : " + block.getType().getValue()+ " block id : "+ block.getId());
+                yield null;
+            }
+        };
     }
 
-    public String renderSpan(Object object) {
-        return mSpanRender.renderText(object);
+    public String renderSpan(RichText[] richTexts) {
+        return this.spanRender.renderText(richTexts);
     }
-
-
 }
