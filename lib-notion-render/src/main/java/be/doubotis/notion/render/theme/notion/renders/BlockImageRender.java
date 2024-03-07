@@ -7,17 +7,18 @@ import com.geolives.entities.blocks.ImageBlock;
 import org.jsoup.nodes.Element;
 
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class BlockImageRender extends BlockBaseRender {
     @Override
     public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
         if(block instanceof ImageBlock imageBlock) {
+            final String parentId = getParentId(imageBlock.getParent());
             final Element img = domBuilder.createElement("img", imageBlock.getId());
             img.addClass("responsive");
-            img.attr("src", imageBlock.getImageUrl());
-            insertIntoDocument(domBuilder, context, getParentId(imageBlock.getParent()), img);
+            img.attr("src", buildNotionMediaServletUrl(parentId, imageBlock.getId()));
+            insertIntoDocument(domBuilder, context, parentId, img);
         }
     }
 
@@ -50,15 +51,24 @@ public class BlockImageRender extends BlockBaseRender {
 //        context.flagAsRendered(blockId);
 //    }
 //
-//    private String buildFinalImageSrc(String src, String blockId) {
-//        if (src.contains("secure.notion-static.com")) {
-//            // In that case, we need to wrap the request.
-//            String destSrc = "https://notion.so/image/" + URLEncoder.encode(src) + "?table=block&id=" + blockId;
-//            return destSrc;
-//        } else {
-//            return src;
-//        }
-//    }
+    public String buildNonSecuredNotionStorageUrl(final String securedUrl, final String blockId) {
+        String[] parts = securedUrl.split("/");
+        String mediaId = parts[4];
+        String fileNameWithExtension = parts[5].split("\\?")[0];
+
+        String internalUrl = String.format("https://%s/secure.notion-static.com/%s/%s",
+                parts[2].replace("prod-files-secure.", ""), mediaId, fileNameWithExtension);
+
+        String encodedInternalUrl = URLEncoder.encode(internalUrl, UTF_8);
+
+        String newUrl = String.format("https://www.notion.so/image/%s?table=block&id=%s", encodedInternalUrl, blockId);
+
+        return newUrl;
+    }
+
+    public String buildNotionMediaServletUrl(final String pageId, final String blockId) {
+        return String.format("/NotionMediaServlet/%s/%s", pageId, blockId);
+    }
 //
 //    private String generateStyleFromFormat(Map<String,Object> format)
 //    {
