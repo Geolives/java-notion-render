@@ -10,10 +10,8 @@ public class BlockColumnListRender extends BlockBaseRender {
     @Override
     public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
         if(block instanceof ColumnListBlock columnListBlock) {
-            final Element div = domBuilder.createElement("div", null);
-            final Element divFlex = domBuilder.createElement("div", columnListBlock.getId());
-            divFlex.addClass("grid-row");
-            div.appendChild(divFlex);
+            final Element div = domBuilder.createElement("div", columnListBlock.getId());
+            div.addClass("grid-row");
             insertIntoDocument(domBuilder, context, getParentId(columnListBlock.getParent()), div);
         }
     }

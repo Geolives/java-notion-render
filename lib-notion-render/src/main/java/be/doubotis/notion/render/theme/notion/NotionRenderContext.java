@@ -103,6 +103,7 @@ public class NotionRenderContext implements RenderContext {
             case COLUMN_LIST -> new BlockColumnListRender();
             case COLUMN -> new BlockColumnRender();
             case CHILD_PAGE -> new BlockChildPageRender();
+            case BOOKMARK -> new BlockBookmarkRender();
             default -> {
                 System.out.println("Unrecognize block type : " + block.getType().getValue()+ " block id : "+ block.getId());
                 yield null;

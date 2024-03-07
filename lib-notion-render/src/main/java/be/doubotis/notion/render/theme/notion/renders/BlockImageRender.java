@@ -4,6 +4,7 @@ import be.doubotis.notion.render.RenderContext;
 import be.doubotis.notion.render.engine.DOMBuilder;
 import com.geolives.entities.blocks.Block;
 import com.geolives.entities.blocks.ImageBlock;
+import com.geolives.entities.enums.FileType;
 import org.jsoup.nodes.Element;
 
 import java.net.URLEncoder;
@@ -14,11 +15,14 @@ public class BlockImageRender extends BlockBaseRender {
     @Override
     public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
         if(block instanceof ImageBlock imageBlock) {
-            final String parentId = getParentId(imageBlock.getParent());
             final Element img = domBuilder.createElement("img", imageBlock.getId());
             img.addClass("responsive");
-            img.attr("src", buildNotionMediaServletUrl(parentId, imageBlock.getId()));
-            insertIntoDocument(domBuilder, context, parentId, img);
+            if(imageBlock.getImage().getType() == FileType.INTERNAL) {
+                img.attr("src", buildNotionMediaServletUrl(context.getPageID(), imageBlock.getId()));
+            } else {
+                img.attr("src", imageBlock.getImageUrl());
+            }
+            insertIntoDocument(domBuilder, context, getParentId(imageBlock.getParent()), img);
         }
     }
 
