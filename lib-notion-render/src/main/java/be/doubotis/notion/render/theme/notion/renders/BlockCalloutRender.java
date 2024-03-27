@@ -4,6 +4,7 @@ import be.doubotis.notion.render.RenderContext;
 import be.doubotis.notion.render.engine.DOMBuilder;
 import be.doubotis.notion.render.theme.notion.NotionRenderContext;
 import com.geolives.entities.blocks.Block;
+import com.geolives.entities.blocks.BulletedListItemBlock;
 import com.geolives.entities.blocks.CalloutBlock;
 import org.jsoup.nodes.Element;
 
@@ -14,7 +15,8 @@ public class BlockCalloutRender extends BlockBaseRender {
 
     @Override
     public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
-        if(block instanceof CalloutBlock calloutBlock) {
+        if(block instanceof CalloutBlock) {
+            CalloutBlock calloutBlock = (CalloutBlock) block;
             final Element div = domBuilder.createElement("div", calloutBlock.getId());
             div.addClass("color-"+ calloutBlock.getColor().getValue());
             div.addClass("callout");

@@ -90,25 +90,37 @@ public class NotionRenderContext implements RenderContext {
 
     protected BlockRender instantiateRender(Block block)
     {
-        return switch (block.getType()) {
-            case PARAGRAPH -> new BlockTextRender();
-            case BULLETED_LIST_ITEM -> new BlockBulletedListRender();
-            case NUMBERED_LIST_ITEM -> new BlockNumberedListRender();
-            case CALLOUT -> new BlockCalloutRender();
-            case HEADING_1 -> new BlockHeaderRender(1);
-            case HEADING_2 -> new BlockHeaderRender(2);
-            case HEADING_3 -> new BlockHeaderRender(3);
-            case QUOTE -> new BlockQuoteRender();
-            case IMAGE -> new BlockImageRender();
-            case COLUMN_LIST -> new BlockColumnListRender();
-            case COLUMN -> new BlockColumnRender();
-            case CHILD_PAGE -> new BlockChildPageRender();
-            case BOOKMARK -> new BlockBookmarkRender();
-            default -> {
-                System.out.println("Unrecognize block type : " + block.getType().getValue()+ " block id : "+ block.getId());
-                yield null;
-            }
-        };
+        switch (block.getType()) {
+            case PARAGRAPH:
+                return new BlockTextRender();
+            case BULLETED_LIST_ITEM:
+                return new BlockBulletedListRender();
+            case NUMBERED_LIST_ITEM:
+                return new BlockNumberedListRender();
+            case CALLOUT:
+                return new BlockCalloutRender();
+            case HEADING_1:
+                return new BlockHeaderRender(1);
+            case HEADING_2:
+                return new BlockHeaderRender(2);
+            case HEADING_3:
+                return new BlockHeaderRender(3);
+            case QUOTE:
+                return new BlockQuoteRender();
+            case IMAGE:
+                return new BlockImageRender();
+            case COLUMN_LIST:
+                return new BlockColumnListRender();
+            case COLUMN:
+                return new BlockColumnRender();
+            case CHILD_PAGE:
+                return new BlockChildPageRender();
+            case BOOKMARK:
+                return new BlockBookmarkRender();
+            default:
+                System.out.println("Unrecognize block type : " + block.getType().getValue() + " block id : " + block.getId());
+                return null;
+        }
     }
 
     public String renderSpan(RichText[] richTexts) {

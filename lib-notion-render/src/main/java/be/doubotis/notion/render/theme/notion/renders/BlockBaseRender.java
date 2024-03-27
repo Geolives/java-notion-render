@@ -51,12 +51,21 @@ public abstract class BlockBaseRender implements BlockRender {
     }
 
     protected String getParentId(final Parent parent) {
-        return switch (parent.getType()) {
-            case PAGE -> ((PageParent) parent).getPageId();
-            case BLOCK -> ((BlockParent) parent).getBlockId();
-            case DATABASEID -> ((DatabaseParent) parent).getDatabaseId();
-            default -> "";
-        };
-
+        String result;
+        switch (parent.getType()) {
+            case PAGE:
+                result = ((PageParent) parent).getPageId();
+                break;
+            case BLOCK:
+                result = ((BlockParent) parent).getBlockId();
+                break;
+            case DATABASEID:
+                result = ((DatabaseParent) parent).getDatabaseId();
+                break;
+            default:
+                result = "";
+                break;
+        }
+        return result;
     }
 }

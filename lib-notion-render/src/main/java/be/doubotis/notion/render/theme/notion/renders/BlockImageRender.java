@@ -4,6 +4,7 @@ import be.doubotis.notion.render.RenderContext;
 import be.doubotis.notion.render.engine.DOMBuilder;
 import com.geolives.entities.blocks.Block;
 import com.geolives.entities.blocks.ImageBlock;
+import com.geolives.entities.blocks.headings.Heading3Block;
 import com.geolives.entities.enums.FileType;
 import org.jsoup.nodes.Element;
 
@@ -14,7 +15,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class BlockImageRender extends BlockBaseRender {
     @Override
     public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
-        if(block instanceof ImageBlock imageBlock) {
+        if(block instanceof ImageBlock) {
+            ImageBlock imageBlock = (ImageBlock) block;
             final Element img = domBuilder.createElement("img", imageBlock.getId());
             img.addClass("responsive");
             if(imageBlock.getImage().getType() == FileType.INTERNAL) {

@@ -4,6 +4,7 @@ import be.doubotis.notion.render.RenderContext;
 import be.doubotis.notion.render.engine.DOMBuilder;
 import com.geolives.entities.blocks.Block;
 import com.geolives.entities.blocks.ColumnBlock;
+import com.geolives.entities.blocks.ColumnListBlock;
 import org.jsoup.nodes.Element;
 
 import java.util.Map;
@@ -11,7 +12,8 @@ import java.util.Map;
 public class BlockColumnRender extends BlockBaseRender {
     @Override
     public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
-        if(block instanceof ColumnBlock columnBlock) {
+        if(block instanceof ColumnBlock) {
+            ColumnBlock columnBlock = (ColumnBlock) block;
             final Element div = domBuilder.createElement("div", columnBlock.getId());
             div.addClass("grid-column");
             insertIntoDocument(domBuilder, context, getParentId(columnBlock.getParent()), div);

@@ -6,6 +6,7 @@ import be.doubotis.notion.render.engine.DOMBuilder;
 import be.doubotis.notion.render.theme.notion.NotionRenderContext;
 
 import com.geolives.entities.blocks.Block;
+import com.geolives.entities.blocks.ColumnBlock;
 import com.geolives.entities.blocks.headings.Heading1Block;
 import com.geolives.entities.blocks.headings.Heading2Block;
 import com.geolives.entities.blocks.headings.Heading3Block;
@@ -23,21 +24,24 @@ public class BlockHeaderRender extends BlockBaseRender {
     @Override
     public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
         final String headerContent;
-        if(block instanceof Heading1Block heading1Block) {
+        if(block instanceof Heading1Block) {
+            Heading1Block heading1Block = (Heading1Block) block;
             headerContent = ((NotionRenderContext)context).renderSpan(heading1Block.getRichTexts());
             if(heading1Block.isToggleable()) {
                 renderToggleableTitle(domBuilder, context, block, headerContent, heading1Block.getColor());
             } else {
                 renderTitle(domBuilder, context, block, headerContent, heading1Block.getColor());
             }
-        } else if(block instanceof Heading2Block heading2Block) {
+        } else if(block instanceof Heading2Block) {
+            Heading2Block heading2Block = (Heading2Block) block;
             headerContent = ((NotionRenderContext)context).renderSpan(heading2Block.getRichTexts());
             if(heading2Block.isToggleable()) {
                 renderToggleableTitle(domBuilder, context, block, headerContent, heading2Block.getColor());
             } else {
                 renderTitle(domBuilder, context, block, headerContent, heading2Block.getColor());
             }
-        } else if(block instanceof Heading3Block heading3Block) {
+        } else if(block instanceof Heading3Block) {
+            Heading3Block heading3Block = (Heading3Block) block;
             headerContent = ((NotionRenderContext)context).renderSpan(heading3Block.getRichTexts());
             if(heading3Block.isToggleable()) {
                 renderToggleableTitle(domBuilder, context, block, headerContent, heading3Block.getColor());

@@ -40,5 +40,5 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.4'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
     implementation group: 'commons-io', name: 'commons-io', version: '2.9.0'
-    implementation project(':lib-java-notion-sdk')
+    implementation project(':lib-notion-java-sdk')
 }

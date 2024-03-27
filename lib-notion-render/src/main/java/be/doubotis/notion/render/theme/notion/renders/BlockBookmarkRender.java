@@ -9,7 +9,8 @@ import org.jsoup.nodes.Element;
 public class BlockBookmarkRender extends BlockBaseRender {
     @Override
     public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
-        if(block instanceof BookmarkBlock bookmarkBlock) {
+        if(block instanceof BookmarkBlock) {
+            BookmarkBlock bookmarkBlock = (BookmarkBlock) block;
             final Element a = domBuilder.createElement("a", bookmarkBlock.getId());
             a.attr("href", bookmarkBlock.getUrl());
             a.text(bookmarkBlock.getUrl());

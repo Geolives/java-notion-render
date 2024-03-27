@@ -3,6 +3,7 @@ package be.doubotis.notion.render.theme.notion.renders;
 import be.doubotis.notion.render.RenderContext;
 import be.doubotis.notion.render.engine.DOMBuilder;
 import com.geolives.entities.blocks.Block;
+import com.geolives.entities.blocks.ParagraphBlock;
 import com.geolives.entities.icons.EmojiIcon;
 import com.geolives.entities.icons.ExternalFileIcon;
 import com.geolives.entities.icons.Icon;
@@ -13,11 +14,14 @@ public class IconRender {
 
     public Element render(final DOMBuilder domBuilder, final Icon icon) {
         Element iconElement = null;
-        if(icon instanceof EmojiIcon emojiIcon) {
+        if(icon instanceof EmojiIcon) {
+            EmojiIcon emojiIcon = (EmojiIcon) icon;
             iconElement = renderEmojiIcon(domBuilder, emojiIcon);
-        } else if(icon instanceof InternalFileIcon internalFileIcon) {
+        } else if(icon instanceof InternalFileIcon) {
+            InternalFileIcon internalFileIcon = (InternalFileIcon) icon;
             iconElement = renderInternalFileIcon(domBuilder, internalFileIcon);
-        } else if(icon instanceof ExternalFileIcon externalFileIcon) {
+        } else if(icon instanceof ExternalFileIcon) {
+            ExternalFileIcon externalFileIcon = (ExternalFileIcon) icon;
             iconElement = renderExternalFileIcon(domBuilder, externalFileIcon);
         }
         return iconElement;

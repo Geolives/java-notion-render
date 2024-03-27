@@ -5,6 +5,7 @@ import be.doubotis.notion.render.engine.DOMBuilder;
 import be.doubotis.notion.render.theme.notion.NotionRenderContext;
 import com.geolives.entities.blocks.Block;
 import com.geolives.entities.blocks.ParagraphBlock;
+import com.geolives.entities.blocks.QuoteBlock;
 import org.jsoup.nodes.Element;
 
 import java.util.List;
@@ -12,7 +13,8 @@ import java.util.List;
 public class BlockTextRender extends BlockBaseRender {
     @Override
     public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
-        if(block instanceof ParagraphBlock paragraph) {
+        if(block instanceof ParagraphBlock) {
+            ParagraphBlock paragraph = (ParagraphBlock) block;
             final Element p = domBuilder.createElement("p", block.getId());
             p.html(((NotionRenderContext)context).renderSpan(paragraph.getRichTexts()));
             p.addClass("color-"+ paragraph.getColor().getValue());
