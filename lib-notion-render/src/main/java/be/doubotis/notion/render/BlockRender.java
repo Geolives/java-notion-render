@@ -1,10 +1,10 @@
 package be.doubotis.notion.render;
 
-import be.doubotis.notion.entities.NotionBlock;
 import be.doubotis.notion.render.engine.DOMBuilder;
+import com.geolives.entities.blocks.Block;
 
 public interface BlockRender {
 
-    void render(DOMBuilder dom, RenderContext ctx, String blockId, NotionBlock nb);
-    void doAfter(DOMBuilder dom, RenderContext ctx, String blockId, NotionBlock nb);
+   void render(DOMBuilder domBuilder, RenderContext context, Block block);
+//    void doAfter(DOMBuilder dom, RenderContext ctx, String blockId, NotionBlock nb);
 }

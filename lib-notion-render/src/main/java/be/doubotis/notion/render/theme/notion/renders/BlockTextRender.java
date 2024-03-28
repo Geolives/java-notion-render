@@ -1,28 +1,24 @@
 package be.doubotis.notion.render.theme.notion.renders;
 
-import be.doubotis.notion.entities.NotionBlock;
 import be.doubotis.notion.render.RenderContext;
 import be.doubotis.notion.render.engine.DOMBuilder;
 import be.doubotis.notion.render.theme.notion.NotionRenderContext;
-import be.doubotis.notion.render.utils.NotionBlockUtils;
-import be.doubotis.notion.render.theme.notion.SpanRender;
+import com.geolives.entities.blocks.Block;
+import com.geolives.entities.blocks.ParagraphBlock;
+import com.geolives.entities.blocks.QuoteBlock;
 import org.jsoup.nodes.Element;
 
 import java.util.List;
 
 public class BlockTextRender extends BlockBaseRender {
-
     @Override
-    public void render(DOMBuilder dom, RenderContext context, String blockId, NotionBlock nb) {
-        NotionRenderContext notionContext = (NotionRenderContext) context;
-
-        List titleEl = (List) NotionBlockUtils.getProperty(nb, "title");
-
-        Element div = dom.createElement( "p", blockId);
-        div.html(notionContext.renderSpan(titleEl));
-
-        String parentId = nb.getValue().getParentId();
-        insertIntoDocument(dom, context, parentId, div);
-        context.flagAsRendered(blockId);
+    public void render(DOMBuilder domBuilder, RenderContext context, Block block) {
+        if(block instanceof ParagraphBlock) {
+            ParagraphBlock paragraph = (ParagraphBlock) block;
+            final Element p = domBuilder.createElement("p", block.getId());
+            p.html(((NotionRenderContext)context).renderSpan(paragraph.getRichTexts()));
+            p.addClass("color-"+ paragraph.getColor().getValue());
+            insertIntoDocument(domBuilder, context, getParentId(paragraph.getParent()), p);
+        }
     }
 }

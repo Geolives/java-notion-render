@@ -1,47 +1,16 @@
 package breadcrumbs;
 
-import be.doubotis.notion.entities.NotionBlock;
-import be.doubotis.notion.render.BlockRenderFactory;
-import be.doubotis.notion.render.theme.notion.NotionRenderContext;
-import be.doubotis.notion.render.theme.notion.SpanRender;
-
+import com.geolives.entities.pages.BreadcrumbItem;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
 public class BreadcrumbBuilder {
 
-    public void printHTMLContent(PrintWriter pw, Map<String, NotionBlock> blocks) {
-
-        NotionRenderContext nrc = new NotionRenderContext(blocks);
-        ArrayList<NotionBlock> pageBlocks = new ArrayList<>();
-        ArrayList<String> pageIds = new ArrayList<>();
-
-        // Loop inside blocks that are pages.
-        for (String key : blocks.keySet()) {
-            NotionBlock nb = blocks.get(key);
-            if (nb.getValue().getType().equals(BlockRenderFactory.TYPE_PAGE)) {
-                pageBlocks.add(nb);
-                pageIds.add(key);
-            } else {
-                // No more page headers, skip it.
-                break;
-            }
-        }
-
-        Collections.reverse(pageBlocks);
-        Collections.reverse(pageIds);
+    public void printHTMLContent(PrintWriter pw, List<BreadcrumbItem> items) {
 
         pw.println("<div class=\"breadcrumb\"><ul>");
-        int i=0;
-        for (NotionBlock nb : pageBlocks) {
-            String pageId = pageIds.get(i);
-            Object titleEl = nb.getValue().getProperties().get("title");
-            String html = new SpanRender(nrc).renderText(titleEl);
-
-            pw.print("<li><a href=\"" + "/NotionServlet?pageid=" + pageId + "\">" + html + "</a></li>");
-            i++;
+        for (BreadcrumbItem item : items) {
+            pw.print("<li><a href=\"" + "/NotionServlet?pageid=" + item.getId() + "\">" + item.getTitle() + "</a></li>");
         }
         pw.println("</ul></div>");
     }
