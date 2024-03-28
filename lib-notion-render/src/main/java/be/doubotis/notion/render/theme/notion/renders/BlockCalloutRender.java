@@ -22,7 +22,10 @@ public class BlockCalloutRender extends BlockBaseRender {
             div.addClass("callout");
             final IconRender iconRender = new IconRender();
             final Element iconElement = iconRender.render(domBuilder, calloutBlock.getIcon());
-            div.html(iconElement.outerHtml() + ((NotionRenderContext)context).renderSpan(calloutBlock.getRichTexts()));
+            final Element divContent = domBuilder.createElement("div", null);
+            divContent.addClass("callout-content");
+            divContent.html(((NotionRenderContext)context).renderSpan(calloutBlock.getRichTexts()));
+            div.html(iconElement.outerHtml() + divContent.outerHtml());
             insertIntoDocument(domBuilder, context, getParentId(calloutBlock.getParent()), div);
         }
     }

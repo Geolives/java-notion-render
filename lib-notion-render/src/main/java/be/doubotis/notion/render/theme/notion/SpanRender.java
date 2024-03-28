@@ -53,6 +53,7 @@ public class SpanRender implements TextRender {
 
     private void renderPageMentionRichText(final Element span, final MentionRichText richText, final PageMention mention) {
         final Element a = domBuilder.createElement("a");
+        a.addClass("page-link");
         a.attr("href", this.context.buildLinkUrl(mention.getId()));
         a.text(richText.getPlainText());
         span.appendChild(a);
