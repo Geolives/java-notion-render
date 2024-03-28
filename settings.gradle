@@ -3,6 +3,5 @@ include ':lib-notion-render'
 include 'app-pdf-generator'
 include 'web-example'
 include ':lib-notion-java-sdk'
-project(':lib-notion-java-sdk').projectDir = new File('../tool-notion-extractor/lib-notion-java-sdk')
 
 
