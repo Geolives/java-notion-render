@@ -13,8 +13,10 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
+    implementation project(':lib-notion-java-sdk')
     implementation project(':lib-notion-render')
 
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.2'
     implementation 'com.itextpdf:itext7-core:7.1.15'
     implementation 'com.itextpdf:html2pdf:3.0.4'
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.4'

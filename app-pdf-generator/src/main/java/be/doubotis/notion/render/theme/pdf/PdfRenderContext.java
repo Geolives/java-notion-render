@@ -1,9 +1,10 @@
 
 package be.doubotis.notion.render.theme.pdf;
 
-import be.doubotis.notion.entities.NotionBlock;
 import be.doubotis.notion.render.BlockRender;
 import be.doubotis.notion.render.theme.notion.NotionRenderContext;
+import com.geolives.entities.blocks.Block;
+import com.geolives.entities.pages.Page;
 
 import java.util.Map;
 
@@ -13,8 +14,8 @@ import java.util.Map;
  */
 public class PdfRenderContext extends NotionRenderContext {
 
-    public PdfRenderContext(Map<String, NotionBlock> blocks) {
-        super(blocks);
+    public PdfRenderContext(final Page page) {
+        super(page);
     }
 
     @Override
@@ -23,8 +24,8 @@ public class PdfRenderContext extends NotionRenderContext {
     }
 
     @Override
-    protected BlockRender instantiateRender(String blockType) {
-        return super.instantiateRender(blockType);
+    protected BlockRender instantiateRender(Block block) {
+        return super.instantiateRender(block);
     }
     
 }

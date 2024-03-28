@@ -1,12 +1,11 @@
 package be.doubotis.notion.pdf;
 
-import be.doubotis.notion.entities.NotionBlock;
-import be.doubotis.notion.entities.NotionRecordMap;
-import be.doubotis.notion.render.theme.notion.NotionThemeFactory;
 import be.doubotis.notion.render.theme.pdf.PdfThemeFactory;
 import be.doubotis.notion.utils.HtmlPageBuilder;
 import be.doubotis.notion.utils.IOUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.geolives.entities.pages.Page;
+import com.geolives.utils.NotionUtils;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
@@ -19,19 +18,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class PdfBuilder {
 
-    private String mContents = "";
-    private ArrayList<File> mFiles;
+    private String contents = "";
+    private ArrayList<File> files;
 
     public PdfBuilder() {
-        mFiles = new ArrayList<>();
+        files = new ArrayList<>();
     }
 
     public void addInputFile(File inputFile) {
-        mFiles.add(inputFile);
+        files.add(inputFile);
     }
 
     public void build() throws IOException {
@@ -42,16 +40,16 @@ public class PdfBuilder {
 
         PdfThemeFactory themeFactory = new PdfThemeFactory();
 
-        for (int i=0; i < mFiles.size(); i++) {
-            String json = IOUtils.readString(mFiles.get(i).getAbsolutePath());
+        for (int i = 0; i < files.size(); i++) {
+            if (!files.get(i).getAbsolutePath().endsWith(".json")) continue;
+            String json = IOUtils.readString(files.get(i).getAbsolutePath());
 
-            ObjectMapper om = new ObjectMapper();
-            NotionRecordMap nrm = om.readValue(json, NotionRecordMap.class);
-            Map<String, NotionBlock> blocks = nrm.getBlocks();
+            ObjectMapper om = NotionUtils.getNotionMapper();
+            Page page = om.readValue(json, Page.class);
 
             StringWriter swHtml = new StringWriter();
             PrintWriter pwHtml = new PrintWriter(swHtml);
-            themeFactory.printHTMLContent(pwHtml, blocks);
+            themeFactory.printHTMLContent(pwHtml, page);
             pwHtml.flush();
             String html = swHtml.toString();
             pageBuilder.addHtmlContent(html);
@@ -64,7 +62,7 @@ public class PdfBuilder {
         String stylesheetContent = swCSS.toString();
         pageBuilder.addStylesheet(stylesheetContent);
 
-        mContents = pageBuilder.getDocument().html();
+        contents = pageBuilder.getDocument().html();
     }
 
     public void writeToFile(File outputFile) throws IOException {
@@ -76,7 +74,7 @@ public class PdfBuilder {
 
         ConverterProperties properties = new ConverterProperties();
         properties.setBaseUri("");
-        Document doc = HtmlConverter.convertToDocument(mContents, pdf, properties);
+        Document doc = HtmlConverter.convertToDocument(contents, pdf, properties);
         doc.close();
 
         System.out.println("Pdf file generated: " + outputFile.getAbsolutePath());
