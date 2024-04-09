@@ -47,4 +47,5 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    systemProperty "NOTION_SECRET", project.findProperty("NOTION_SECRET")
 }

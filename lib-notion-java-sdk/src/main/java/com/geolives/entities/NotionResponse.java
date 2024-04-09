@@ -1,22 +1,20 @@
 package com.geolives.entities;
 
-import com.geolives.entities.blocks.Block;
-
 import java.util.List;
 
-public class NotionResponse {
-    private List<Block> results;
+public class NotionResponse<T> {
+    private List<T> results;
     private String nextCursor;
     private boolean hasMore;
     private String requestId;
 
     public NotionResponse() {}
 
-    public List<Block> getResults() {
+    public List<T> getResults() {
         return this.results;
     }
 
-    public void setResults(final List<Block> results) {
+    public void setResults(final List<T> results) {
         this.results = results;
     }
 

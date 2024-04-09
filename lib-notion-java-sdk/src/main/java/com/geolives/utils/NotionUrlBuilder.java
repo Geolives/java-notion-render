@@ -46,4 +46,14 @@ public class NotionUrlBuilder {
             throw new NotionBuildUrlException("Failed to build retrieve page url", ex);
         }
     }
+
+    public HttpUrl buildRetrieveBlockCommentUrl(final String blockId) throws NotionBuildUrlException {
+        try {
+            HttpUrl.Builder httpBuilder = HttpUrl.parse(String.format("%s/comments", this.url)).newBuilder();
+            httpBuilder.addQueryParameter("block_id", blockId);
+            return httpBuilder.build();
+        } catch (IllegalArgumentException ex) {
+            throw new NotionBuildUrlException("Failed to build retrieve block comments url", ex);
+        }
+    }
 }

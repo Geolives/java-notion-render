@@ -1,7 +1,9 @@
 package com.geolives;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.geolives.entities.Comment;
 import com.geolives.entities.NotionError;
 import com.geolives.entities.NotionResponse;
 import com.geolives.entities.blocks.Block;
@@ -20,7 +22,6 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.List;
 
 public class NotionClient {
 
@@ -51,27 +52,27 @@ public class NotionClient {
         }
     }
 
-    public NotionResponse retrieveBlockChildren(final String blockId, final String startCursor, final int pageSize) throws NotionException {
+    public NotionResponse<Block> retrieveBlockChildren(final String blockId, final String startCursor, final int pageSize) throws NotionException {
         final String validId = NotionUtils.dashifyId(blockId);
         final HttpUrl url = this.urlBuilder.buildRetrieveBlockChildrenUrl(validId, startCursor, pageSize);
         final Request request = requestBuilder.buildGetRequest(url);
         final String resultJson = executeRequest(request, 0);
         try {
-            return this.mapper.readValue(resultJson, NotionResponse.class);
+            return this.mapper.readValue(resultJson, new TypeReference<NotionResponse<Block>>(){});
         } catch (JsonProcessingException e) {
             throw new NotionException(e);
         }
     }
 
-    public NotionResponse retrieveBlockChildren(final String blockId, final String startCursor) throws NotionException {
+    public NotionResponse<Block> retrieveBlockChildren(final String blockId, final String startCursor) throws NotionException {
         return retrieveBlockChildren(blockId, startCursor, 0);
     }
 
-    public NotionResponse retrieveBlockChildren(final String blockId, final int pageSize) throws NotionException {
+    public NotionResponse<Block> retrieveBlockChildren(final String blockId, final int pageSize) throws NotionException {
         return retrieveBlockChildren(blockId, null, pageSize);
     }
 
-    public NotionResponse retrieveBlockChildren(final String blockId) throws NotionException {
+    public NotionResponse<Block> retrieveBlockChildren(final String blockId) throws NotionException {
         return retrieveBlockChildren(blockId, null, 0);
     }
 
@@ -82,6 +83,18 @@ public class NotionClient {
         final String resultJson = executeRequest(request, 0);
         try {
             return this.mapper.readValue(resultJson, Block.class);
+        } catch (JsonProcessingException e) {
+            throw new NotionException(e);
+        }
+    }
+
+    public NotionResponse<Comment> retrieveBlockComments(final String blockId) throws NotionException {
+        final String validId = NotionUtils.dashifyId(blockId);
+        final HttpUrl url = urlBuilder.buildRetrieveBlockCommentUrl(validId);
+        final Request request = requestBuilder.buildGetRequest(url);
+        final String resultJson = executeRequest(request, 0);
+        try {
+            return this.mapper.readValue(resultJson, new TypeReference<NotionResponse<Comment>>(){});
         } catch (JsonProcessingException e) {
             throw new NotionException(e);
         }
