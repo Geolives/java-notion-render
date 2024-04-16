@@ -100,6 +100,18 @@ public class NotionClient {
         }
     }
 
+    public Comment insertComment(final String blockId, final String comment) throws NotionException {
+        final String validId = NotionUtils.dashifyId(blockId);
+        final HttpUrl url = urlBuilder.buildInsertCommentUrl();
+        final Request request = requestBuilder.buildPostCommentRequest(url, blockId, comment);
+        final String resultJson = executeRequest(request, 0);
+        try {
+            return this.mapper.readValue(resultJson, Comment.class);
+        } catch (JsonProcessingException e) {
+            throw new NotionException(e);
+        }
+    }
+
     private String executeRequest(final Request request, int failedRequestCount) throws NotionException {
         try (final Response response = this.httpClient.newCall(request).execute()) {
             if (response.isSuccessful() && response.body() != null) {
