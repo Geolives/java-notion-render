@@ -29,6 +29,7 @@ public class NotionClient {
     private static final RateLimiter rateLimiter = RateLimiter.create(100.0 / 60.0);
     private final OkHttpClient httpClient;
     private final ObjectMapper mapper;
+
     private final NotionUrlBuilder urlBuilder;
     private final NotionRequestBuilder requestBuilder;
 
