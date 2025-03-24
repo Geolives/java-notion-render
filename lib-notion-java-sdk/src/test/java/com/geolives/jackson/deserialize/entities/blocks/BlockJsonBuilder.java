@@ -203,6 +203,21 @@ public class BlockJsonBuilder {
                 "   }");
     }
 
+    public static String getTableBlock() {
+        return getBlockJson(BlockTypeConstants.TABLE, "\"table\": {\n" +
+                "   \t\"table_width\": 2,\n" +
+                "   \t\"has_column_header\": false,\n" +
+                "   \t\"has_row_header\": false\n" +
+                "}");
+    }
+
+    public static String getTableRowBlock() {
+        return getBlockJson(BlockTypeConstants.TABLE_ROW, "\"table_row\": {\n" +
+                "\t\"cells\": \n" +
+                "[[" + getTextRichTextJsonWithNullLink("Test") + "]]\n" +
+                "}");
+    }
+
     public static String getParagraphBlock() {
         return getBlockJson(BlockTypeConstants.PARAGRAPH, "\"paragraph\": {\n" +
                 "    \"rich_text\": [{\n" +
