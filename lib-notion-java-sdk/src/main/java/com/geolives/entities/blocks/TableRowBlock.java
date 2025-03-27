@@ -19,7 +19,7 @@ public class TableRowBlock extends Block {
         this.tableRow = tableRow;
     }
 
-    private class TableRow {
+    public class TableRow {
         private RichText[][] cells;
 
         public TableRow() {}

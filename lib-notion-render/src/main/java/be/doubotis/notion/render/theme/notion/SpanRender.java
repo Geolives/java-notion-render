@@ -18,8 +18,8 @@ import java.util.*;
 
 public class SpanRender implements TextRender {
 
-    private RenderContext context;
-    private Document domBuilder;
+    protected RenderContext context;
+    protected Document domBuilder;
 
     public SpanRender(RenderContext context) {
         this.context = context;
@@ -44,14 +44,14 @@ public class SpanRender implements TextRender {
 
     }
 
-    private void renderMentionRichText(final Element span, final MentionRichText richText) {
+    protected void renderMentionRichText(final Element span, final MentionRichText richText) {
         final Mention mention = richText.getMention();
         if(mention.getType() == MentionRichTextType.PAGE) {
             renderPageMentionRichText(span, richText, (PageMention) mention);
         }
     }
 
-    private void renderPageMentionRichText(final Element span, final MentionRichText richText, final PageMention mention) {
+    protected void renderPageMentionRichText(final Element span, final MentionRichText richText, final PageMention mention) {
         final Element a = domBuilder.createElement("a");
         a.addClass("page-link");
         a.attr("href", this.context.buildLinkUrl(mention.getId()));
@@ -59,7 +59,7 @@ public class SpanRender implements TextRender {
         span.appendChild(a);
     }
 
-    private void renderTextRichText(final Element span, final TextRichText richText) {
+    protected void renderTextRichText(final Element span, final TextRichText richText) {
         if(richText.getLinkUrl() != null) {
             final Element a = domBuilder.createElement("a");
             a.attr("href", richText.getLinkUrl());
@@ -70,7 +70,7 @@ public class SpanRender implements TextRender {
         }
     }
 
-    private void addCSSClasses(final Element span, final Annotation annotations) {
+    protected void addCSSClasses(final Element span, final Annotation annotations) {
         span.addClass("color-"+ annotations.getColor().getValue());
         if(annotations.isBold()) {
             span.addClass("style-bold");
