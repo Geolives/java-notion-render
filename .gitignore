@@ -6,4 +6,4 @@ gradlew
 gradlew.bat
 gradle
 lib-notion-render/gradle.properties
-lib-notion-java-sdk/gradle.properties
+gradle.properties

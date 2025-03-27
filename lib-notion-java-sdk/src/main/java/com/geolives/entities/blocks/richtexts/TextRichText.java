@@ -43,7 +43,7 @@ public class TextRichText extends RichText {
         this.text = text;
     }
 
-    private class Text {
+    public static class Text {
         private String content;
         private Link link;
 
@@ -63,6 +63,14 @@ public class TextRichText extends RichText {
 
         public void setLink(final Link link) {
             this.link = link;
+        }
+
+        @JsonIgnore
+        public void setLinkUrl(String linkUrl) {
+            if(this.link == null) {
+                this.link = new Link();
+            }
+            this.link.setUrl(linkUrl);
         }
 
         private class Link {

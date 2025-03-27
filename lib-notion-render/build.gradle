@@ -7,7 +7,7 @@ def props = new Properties()
 file("gradle.properties").withInputStream { props.load(it) }
 
 group 'be.doubotis.notion'
-version '1.13-java11'
+version '1.15-java11'
 
 repositories {
     mavenCentral()

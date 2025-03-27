@@ -23,10 +23,13 @@ public class PageMention extends Mention {
 
     @JsonIgnore
     public void setId(final String id) {
+        if (this.page == null) {
+            this.page = new PageMentionObject();
+        }
         this.page.setId(id);
     }
 
-    private class PageMentionObject {
+    public static class PageMentionObject {
         private String id;
 
         public PageMentionObject() {}

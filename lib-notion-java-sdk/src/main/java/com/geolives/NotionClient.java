@@ -132,4 +132,12 @@ public class NotionClient {
             }
         }
     }
+
+    public Insertion inserts() {
+        return new Insertion(httpClient, mapper, urlBuilder, requestBuilder);
+    }
+
+    public Modification changes() {
+        return new Modification(httpClient, mapper, urlBuilder, requestBuilder);
+    }
 }
