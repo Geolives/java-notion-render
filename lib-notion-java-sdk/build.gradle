@@ -7,7 +7,7 @@ def props = new Properties()
 file("gradle.properties").withInputStream { props.load(it) }
 
 group = 'com.geolives'
-version = '1.15-java11'
+version = '1.16-java11'
 
 repositories {
     mavenCentral()
@@ -47,6 +47,6 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    //exclude 'integrations/**'
+    exclude 'integrations/**'
     systemProperty "NOTION_SECRET", project.findProperty("NOTION_SECRET")
 }
