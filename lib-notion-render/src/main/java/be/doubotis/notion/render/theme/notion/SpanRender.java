@@ -18,6 +18,14 @@ import java.util.*;
 
 public class SpanRender implements TextRender {
 
+    public static final String BOLD = "style-bold";
+    public static final String ITALIC = "style-italic";
+    public static final String UNDERLINE = "style-underline";
+    public static final String STRIKETHROUGH = "style-strikethrough";
+    public static final String UNDERLINE_STRIKETHROUGH = "style-underline-strikethrough";
+    public static final String CODE = "style-code";
+    public static final String COLOR_PREFIX = "color-";
+
     protected RenderContext context;
     protected Document domBuilder;
 
@@ -73,21 +81,23 @@ public class SpanRender implements TextRender {
     protected void addCSSClasses(final Element span, final Annotation annotations) {
         span.addClass("color-"+ annotations.getColor().getValue());
         if(annotations.isBold()) {
-            span.addClass("style-bold");
+            span.addClass(BOLD);
         }
         if(annotations.isItalic()) {
-            span.addClass("style-italic");
+            span.addClass(ITALIC);
         }
         if(annotations.isStrikethrough() && !annotations.isUnderline()) {
-            span.addClass("style-strikethrough");
+            span.addClass(STRIKETHROUGH);
         }
         if(annotations.isUnderline() && !annotations.isStrikethrough()) {
-            span.addClass("style-underline");
+            span.addClass(UNDERLINE);
         }
         if(annotations.isUnderline() && annotations.isStrikethrough()) {
-            span.addClass("style-underline-strikethrough");
+            span.addClass(UNDERLINE_STRIKETHROUGH);
         }
-
+        if (annotations.isCode()) {
+            span.addClass(CODE);
+        }
     }
 
 //    private ArrayList extractFromJsonArray(List array) {
