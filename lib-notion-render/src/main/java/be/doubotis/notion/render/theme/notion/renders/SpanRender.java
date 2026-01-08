@@ -1,4 +1,4 @@
-package be.doubotis.notion.render.theme.notion;
+package be.doubotis.notion.render.theme.notion.renders;
 
 import be.doubotis.notion.render.RenderContext;
 import be.doubotis.notion.render.TextRender;
@@ -13,8 +13,6 @@ import com.geolives.entities.enums.RichTextType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
-import java.util.*;
 
 public class SpanRender implements TextRender {
 

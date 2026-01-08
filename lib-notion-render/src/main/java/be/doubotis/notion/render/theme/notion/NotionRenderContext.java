@@ -3,7 +3,6 @@ package be.doubotis.notion.render.theme.notion;
 import be.doubotis.notion.render.RenderContext;
 import be.doubotis.notion.render.theme.notion.renders.*;
 import be.doubotis.notion.render.BlockRender;
-import be.doubotis.notion.render.BlockRenderFactory;
 import be.doubotis.notion.render.engine.DOMBuilder;
 import com.geolives.entities.blocks.Block;
 import com.geolives.entities.blocks.richtexts.RichText;
@@ -67,13 +66,6 @@ public class NotionRenderContext implements RenderContext {
             doRender(child);
         }
     }
-
-//    public void doAfter(DOMBuilder dom, String blockId, NotionBlock nb) {
-//        BlockRender render = getRender(blockId, nb);
-//        if (render != null) {
-//            render.doAfter(dom, this, blockId, nb);
-//        }
-//    }
 
     public synchronized BlockRender getRender(Block block) {
         final BlockType blockType = block.getType();

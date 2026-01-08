@@ -4,7 +4,7 @@
 //import be.doubotis.notion.render.RenderContext;
 //import be.doubotis.notion.render.engine.DOMBuilder;
 //import be.doubotis.notion.render.theme.notion.NotionRenderContext;
-//import be.doubotis.notion.render.theme.notion.SpanRender;
+//import be.doubotis.notion.render.theme.notion.renders.SpanRender;
 //import org.jsoup.nodes.Element;
 //
 //import java.util.List;
