@@ -4,13 +4,15 @@ import com.geolives.entities.blocks.Block;
 import com.geolives.entities.blocks.ParagraphBlock;
 import com.geolives.entities.blocks.richtexts.RichText;
 
+import java.util.Map;
+
 public class BlockTextTranslator extends BlockBaseTranslator {
 
     @Override
-    public void translate(Block block, String translation) {
+    public void translate(Block block, String translation, Map<String, String> references) {
         if(block instanceof ParagraphBlock) {
             ParagraphBlock paragraph = (ParagraphBlock) block;
-            RichText[] rts = parseTranslation(translation);
+            RichText[] rts = parseTranslation(translation, references);
             paragraph.setRichTexts(rts);
         }
     }

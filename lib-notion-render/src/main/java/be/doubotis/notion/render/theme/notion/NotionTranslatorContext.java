@@ -7,6 +7,7 @@ import com.geolives.entities.pages.BreadcrumbItem;
 import com.geolives.entities.pages.Page;
 import com.geolives.helpers.RichTextHelper;
 
+import java.util.Iterator;
 import java.util.Map;
 
 public class NotionTranslatorContext {
@@ -22,6 +23,7 @@ public class NotionTranslatorContext {
         String translation = translations.get(page.getId());
         if (translation != null) {
             RichText rt = RichTextHelper.fromText(translation);
+            rt.setPlainText(translation);
             page.getProperties().getTitle().setTitle(new RichText[]{ rt });
         }
 
@@ -36,16 +38,31 @@ public class NotionTranslatorContext {
         }
 
         // Translate blocks.
-        page.getChildren().forEach(this::process);
+        Iterator<Block> it = page.getChildren().iterator();
+        while (it.hasNext()) {
+            Block block = it.next();
+            this.process(it, block);
+        }
     }
 
-    private void process(Block block) {
+    private void process(Iterator<Block> it, Block block) {
+        String translation = translations.get(block.getId());
+        if (translation != null && translation.isEmpty()) {
+            // If a translation is empty, that means the complete block must be deleted.
+            it.remove();
+            return;
+        }
+
         Translator processor = instantiateTranslator(block);
         if (processor != null) {
             processor.process(block, translations);
         }
         if (block.hasChildren()) {
-            block.getChildren().forEach(this::process);
+            Iterator<Block> subIt = block.getChildren().iterator();
+            while (subIt.hasNext()) {
+                Block subBlock = subIt.next();
+                this.process(subIt, subBlock);
+            }
         }
     }
 

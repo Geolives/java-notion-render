@@ -16,13 +16,22 @@ import org.jsoup.parser.Parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /** Parser that is suitable to use to convert back translation HTML blocks to RichText arrays. */
 public class TranslationSpanParser {
+    private Map<String, String> pageTranslations;
+
+    public TranslationSpanParser(Map<String, String> pageTranslations) {
+        this.pageTranslations = pageTranslations;
+    }
 
     public RichText[] parse(String html) {
-        Document doc = Jsoup.parse(html, "", Parser.xmlParser());
+        // We start by replacing again <br>
+        String computedHtml = html.replace("<br>", "\n")
+                .replace("<br/>", "\n");
+        Document doc = Jsoup.parse(computedHtml, "", Parser.xmlParser());
 
         List<RichText> result = new ArrayList<RichText>();
         List<Node> nodes = doc.childNodes();
@@ -37,7 +46,7 @@ public class TranslationSpanParser {
     private void parseNode(Node node, List<RichText> result) {
         if (node instanceof TextNode) {
             TextNode textNode = (TextNode) node;
-            String text = textNode.text();
+            String text = textNode.getWholeText();
             if (text != null && !text.isEmpty()) {
                 result.add(buildTextRichText(text, null));
             }
@@ -53,9 +62,21 @@ public class TranslationSpanParser {
 
         if ("span".equals(tag)) {
             Annotation annotation = parseAnnotations(element);
-            String text = element.text();
-            if (text != null && !text.isEmpty()) {
-                result.add(buildTextRichText(text, annotation));
+            List<Node> children = element.childNodes();
+            if (!children.isEmpty() && !(children.get(0) instanceof TextNode)) {
+                Element subElement = (Element) children.get(0);
+                String subTag = subElement.tagName();
+                if ("a".equals(subTag)) {
+                    String href = subElement.attr("href");
+                    String text = subElement.wholeText();
+                    result.add(buildLink(href, text, annotation));
+                }
+            }
+            else {
+                String text = element.wholeText();
+                if (text != null && !text.isEmpty()) {
+                    result.add(buildTextRichText(text, annotation));
+                }
             }
             return;
         }
@@ -63,6 +84,13 @@ public class TranslationSpanParser {
         if ("page".equals(tag)) {
             String id = element.attr("id");
             result.add(buildPageMention(id));
+            return;
+        }
+
+        if ("a".equals(tag)) {
+            String href = element.attr("href");
+            String text = element.text();
+            result.add(buildLink(href, text, null));
             return;
         }
 
@@ -80,6 +108,7 @@ public class TranslationSpanParser {
         txt.setContent(text);
 
         rt.setText(txt);
+        rt.setPlainText(text);
         rt.setAnnotations(annotation != null ? annotation : defaultAnnotation());
         return rt;
     }
@@ -91,10 +120,24 @@ public class TranslationSpanParser {
         MentionRichText mention = new MentionRichText();
         mention.setType(RichTextType.MENTION);
         mention.setMention(pageMention);
-        mention.setPlainText("");
+        mention.setPlainText(this.pageTranslations.get(pageId));
         mention.setAnnotations(defaultAnnotation());
 
         return mention;
+    }
+
+    private TextRichText buildLink(String href, String text, Annotation annotation) {
+        TextRichText rt = new TextRichText();
+
+        TextRichText.Text txt = new TextRichText.Text();
+        txt.setContent(text);
+
+        rt.setText(txt);
+        rt.setPlainText(text);
+        rt.setLinkUrl(href);
+        rt.setContent(text);
+        rt.setAnnotations(annotation != null ? annotation : defaultAnnotation());
+        return rt;
     }
 
     private Annotation parseAnnotations(Element span) {

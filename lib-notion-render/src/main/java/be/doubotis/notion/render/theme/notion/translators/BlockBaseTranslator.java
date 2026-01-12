@@ -12,19 +12,19 @@ public abstract class BlockBaseTranslator implements Translator {
     public void process(Block block, Map<String, String> translations) {
         String translationFound = getTranslationIfExists(block.getId(), translations);
         if (translationFound != null) {
-            translate(block, translationFound);
+            translate(block, translationFound, translations);
         }
     }
 
-    public abstract void translate(Block block, String translation);
+    public abstract void translate(Block block, String translation, Map<String, String> references);
 
     protected String getTranslationIfExists(String blockId, Map<String, String> translations) {
         String translationFound = translations.get(blockId);
         return translationFound;
     }
 
-    protected RichText[] parseTranslation(String translation) {
-        return new TranslationSpanParser()
+    protected RichText[] parseTranslation(String translation, Map<String, String> pageTranslations) {
+        return new TranslationSpanParser(pageTranslations)
                 .parse(translation);
     }
 }
