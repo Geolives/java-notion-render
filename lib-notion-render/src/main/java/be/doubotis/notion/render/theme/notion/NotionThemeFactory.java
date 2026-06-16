@@ -34,7 +34,7 @@ public class NotionThemeFactory implements BlockRenderFactory {
     public synchronized void printHTMLContent(PrintWriter pw, final Page page)
     {
         NotionRenderContext ctx = new NotionRenderContext(page);
-        ctx.render(pw);
+        ctx.renderTo(pw);
     }
 
 }

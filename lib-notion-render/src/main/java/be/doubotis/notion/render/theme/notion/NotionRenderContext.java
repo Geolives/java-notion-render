@@ -14,7 +14,7 @@ import java.util.*;
 
 public class NotionRenderContext implements RenderContext {
 
-    private DOMBuilder domBuilder;
+    protected DOMBuilder domBuilder;
     private Map<BlockType, BlockRender> renders;
     private SpanRender spanRender;
     private Page page;
@@ -41,8 +41,7 @@ public class NotionRenderContext implements RenderContext {
         return "/NotionServlet?pageid=" + pageId;
     }
 
-    public void render(final PrintWriter pw) {
-
+    protected void doRenderAll() {
         this.domBuilder.clear();
 
         final PageRender pageRender = new PageRender();
@@ -51,12 +50,16 @@ public class NotionRenderContext implements RenderContext {
         for(final Block block : this.page.getChildren()) {
             doRender(block);
         }
+    }
 
-        // Process is complete, write into the printwriter.
+    public void renderTo(final PrintWriter pw) {
+        doRenderAll();
+
+        // In that step the domBuilder is ready. Print it into the print writer.
         this.domBuilder.writeTo(pw);
     }
 
-    public void doRender(final Block block) {
+    protected void doRender(final Block block) {
         System.out.println("Render block : " + block.getId());
         BlockRender render = getRender(block);
         if (render != null) {

@@ -21,6 +21,6 @@ public class PdfThemeFactory extends NotionThemeFactory {
     public synchronized void printHTMLContent(PrintWriter pw, Page page)
     {
         PdfRenderContext ctx = new PdfRenderContext(page);
-        ctx.render(pw);
+        ctx.renderTo(pw);
     }
 }

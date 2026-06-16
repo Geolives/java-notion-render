@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 group 'be.doubotis.notion.pdf-generator'
@@ -7,6 +8,15 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'be.doubotis.notion.Main'
+    }
 }
 
 dependencies {
